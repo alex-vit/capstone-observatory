@@ -1,11 +1,32 @@
 package observatory
 
 import com.sksamuel.scrimage.{Image, Pixel}
+import math._
 
 /**
   * 2nd milestone: basic visualization
   */
 object Visualization {
+
+  private[observatory] def degreesToRadians(degrees: Double): Double = degrees * Pi / 180
+
+  // based on the first formula from https://en.wikipedia.org/wiki/Great-circle_distance
+  private[observatory] def distance(location1: Location, location2: Location): Double = {
+    val phi1 = degreesToRadians(location1.lat)
+    val lambda1 = degreesToRadians(location1.lon)
+    val phi2 = degreesToRadians(location2.lat)
+    val lambda2 = degreesToRadians(location2.lon)
+
+//    val deltaPhi = abs(phi1 - phi2)
+    val deltaLambda = abs(lambda1 - lambda2)
+
+    val deltaSigma = acos(sin(phi1) * sin(phi2) + cos(phi1) * cos(phi2) * cos(deltaLambda))
+
+    val r = 6371 * 1000 // meters
+
+    val distance = r * deltaSigma
+    distance // also meters
+  }
 
   /**
     * @param temperatures Known temperatures: pairs containing a location and the temperature at this location
