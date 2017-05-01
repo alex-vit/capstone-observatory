@@ -57,13 +57,35 @@ object Visualization {
     calculatePrediction(temperatures, location, p)
   }
 
+  private[observatory] def getBounds(points: Iterable[(Double, Color)], value: Double): ((Double, Color), (Double, Color)) = {
+    assert(points.size >= 2, "Need at least 2 points.")
+    val sorted = points.toArray.sortBy(_._1)
+    assert(
+      sorted.head._1 <= value && value <= sorted.last._1,
+      f"Value $value doesn't belong to [${sorted.head._1}, ${sorted.last._1}]"
+    )
+    val bounds = sorted.iterator.sliding(2).filter{
+      case Seq((d1, _), (d2, _)) => d1 <= value && value <= d2
+    }
+    val Seq(p1, p2) = bounds.toArray.head
+    (p1, p2)
+  }
+
+  private[observatory] def lerp(low: Int, high: Int, t: Double): Int = ((1 - t) * low + t * high).toInt
+
   /**
     * @param points Pairs containing a value and its associated color
     * @param value The value to interpolate
     * @return The color that corresponds to `value`, according to the color scale defined by `points`
     */
   def interpolateColor(points: Iterable[(Double, Color)], value: Double): Color = {
-    ???
+    val (low, high) = getBounds(points, value)
+    val t = abs((value - low._1) / (high._1 - low._1))
+    Color(
+      lerp(low._2.red, high._2.red, t),
+      lerp(low._2.green, high._2.green, t),
+      lerp(low._2.blue, high._2.blue, t)
+    )
   }
 
   /**

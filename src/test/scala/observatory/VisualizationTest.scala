@@ -1,6 +1,6 @@
 package observatory
 
-import observatory.Visualization.{calculatePrediction, degreesToRadians, distance}
+import observatory.Visualization._
 
 import math.{Pi, round}
 import org.junit.runner.RunWith
@@ -57,4 +57,31 @@ class VisualizationTest extends FunSuite with Checkers {
     assert(round(prediction) == round(average))
 
   }
+
+  test("getBounds: Should throw exception if less than 2 points provided") {
+    val vec = Vector[Tuple2[Double, Color]]((0.2, Color(1, 2, 0)))
+    val e = intercept[AssertionError] {
+      getBounds(vec, 0)
+    }
+    assert(e.getMessage === "assertion failed: Need at least 2 points.")
+  }
+
+  test("getBounds: Should fail if value out of bounds") {
+    val list = Vector[Tuple2[Double, Color]](
+      (0.2, Color(1, 2, 0)),
+      (1.1, Color(1, 2, 3))
+    )
+    val tooLow = 0.1
+    val e1 = intercept[AssertionError] {
+      getBounds(list, tooLow)
+    }
+    assert(e1.getMessage === "assertion failed: Value 0.1 doesn't belong to [0.2, 1.1]")
+
+    val tooHigh = 2.0
+    val e2 = intercept[AssertionError] {
+      getBounds(list, tooHigh)
+    }
+    assert(e2.getMessage === "assertion failed: Value 2.0 doesn't belong to [0.2, 1.1]")
+  }
+
 }
