@@ -8,6 +8,9 @@ import math._
   */
 object Visualization {
 
+  private val minDistance = 1000d // meters
+  private val p = 2
+
   private[observatory] def degreesToRadians(degrees: Double): Double = degrees * Pi / 180
 
   // based on the first formula from https://en.wikipedia.org/wiki/Great-circle_distance
@@ -28,13 +31,30 @@ object Visualization {
     distance // also meters
   }
 
+  // Moved calculation into it's own function, so I can test with different 'p' values.
+  private[observatory] def calculatePrediction(known: Iterable[(Location, Double)], forLocation: Location, p: Double = 2) = {
+    var weight, weightSum, weighedTemperatures = 0d
+
+    known.foreach{
+      case (loc, temperature) => {
+        val dist = distance(loc, forLocation)
+        weight =
+          if (dist <= minDistance) 1
+          else 1d / pow(dist, p)
+        weightSum += weight
+        weighedTemperatures += weight * temperature
+      }
+    }
+    weighedTemperatures / weightSum
+  }
+
   /**
     * @param temperatures Known temperatures: pairs containing a location and the temperature at this location
     * @param location Location where to predict the temperature
     * @return The predicted temperature at `location`
     */
   def predictTemperature(temperatures: Iterable[(Location, Double)], location: Location): Double = {
-    ???
+    calculatePrediction(temperatures, location, p)
   }
 
   /**
