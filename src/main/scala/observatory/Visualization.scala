@@ -88,13 +88,38 @@ object Visualization {
     )
   }
 
+  private[observatory] def rgbToPixel(color: Color): Pixel = {
+    val Color(r, g, b) = color
+    Pixel(r, g, b, 255)
+  }
+  private[observatory] def idxToLoc(idx: Int, cols: Int): Location = {
+    val x = idx % cols
+    val y = idx / cols
+    val lon = x - 180
+    val lat =
+      if (y <= cols / 2) 90 - y
+      else -1 * (y - 90)
+    Location(lat, lon)
+  }
+
   /**
     * @param temperatures Known temperatures
     * @param colors Color scale
     * @return A 360×180 image where each pixel shows the predicted temperature at its location
     */
   def visualize(temperatures: Iterable[(Location, Double)], colors: Iterable[(Double, Color)]): Image = {
-    ???
+    val width = 360
+    val height = 180
+
+    val pixels = (for {
+      i <- 0 until width * height
+      loc = idxToLoc(i, width)
+      temp = predictTemperature(temperatures, loc)
+      color = interpolateColor(colors, temp)
+      pixel = rgbToPixel(color)
+    } yield pixel).toArray
+
+    Image(width, height, pixels)
   }
 
 }
