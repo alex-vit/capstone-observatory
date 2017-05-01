@@ -66,22 +66,17 @@ class VisualizationTest extends FunSuite with Checkers {
     assert(e.getMessage === "assertion failed: Need at least 2 points.")
   }
 
-  test("getBounds: Should fail if value out of bounds") {
-    val list = Vector[Tuple2[Double, Color]](
-      (0.2, Color(1, 2, 0)),
-      (1.1, Color(1, 2, 3))
-    )
-    val tooLow = 0.1
-    val e1 = intercept[AssertionError] {
-      getBounds(list, tooLow)
-    }
-    assert(e1.getMessage === "assertion failed: Value 0.1 doesn't belong to [0.2, 1.1]")
+  test("Interpolated 'middle' color should be (128, 128, 128)") {
+    val black = Color(0, 0, 0)
+    val white = Color(255, 255, 255)
 
-    val tooHigh = 2.0
-    val e2 = intercept[AssertionError] {
-      getBounds(list, tooHigh)
-    }
-    assert(e2.getMessage === "assertion failed: Value 2.0 doesn't belong to [0.2, 1.1]")
+    val vec = Vector[(Double, Color)](
+      (0, black),
+      (1, white)
+    )
+    val v = 0.5
+    val interpolated = interpolateColor(vec, v)
+    assert(interpolated === Color(128, 128, 128))
   }
 
 }
