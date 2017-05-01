@@ -22,9 +22,9 @@ object Visualization {
 
     val deltaSigma = acos(sin(phi1) * sin(phi2) + cos(phi1) * cos(phi2) * cos(deltaLambda))
 
-    val r = 6371 * 1000 // meters
+    val earthRadius = 6371 * 1000 // meters
 
-    val distance = r * deltaSigma
+    val distance = earthRadius * deltaSigma
     distance // also meters
   }
 
