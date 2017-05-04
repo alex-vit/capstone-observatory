@@ -64,11 +64,8 @@ object Visualization {
     if (value <= sorted.head._1) (sorted.head, sorted.head)
     else if (sorted.last._1 <= value) (sorted.last, sorted.last)
     else {
-      val bounds = sorted.iterator.sliding(2).filter {
-        case Seq((d1, _), (d2, _)) => d1 <= value && value <= d2
-      }
-      val Seq(p1, p2) = bounds.toArray.head
-      (p1, p2)
+      val i = (1 until sorted.length).find(i => value <= sorted(i)._1).get
+      (sorted(i - 1), sorted(i))
     }
   }
 

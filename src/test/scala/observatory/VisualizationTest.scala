@@ -11,6 +11,12 @@ import org.scalatest.prop.Checkers
 @RunWith(classOf[JUnitRunner])
 class VisualizationTest extends FunSuite with Checkers {
 
+  private val points = Vector[(Double, Color)](
+    (2d, Color(2, 2, 2)),
+    (3d, Color(3, 3, 3)),
+    (4d, Color(4, 4, 4))
+  )
+
   test("Degrees to radians") {
     val deg = 180
     val rad = degreesToRadians(deg)
@@ -58,14 +64,6 @@ class VisualizationTest extends FunSuite with Checkers {
 
   }
 
-  test("getBounds: Should throw exception if less than 2 points provided") {
-    val vec = Vector[Tuple2[Double, Color]]((0.2, Color(1, 2, 0)))
-    val e = intercept[AssertionError] {
-      getBounds(vec, 0)
-    }
-    assert(e.getMessage === "assertion failed: Need at least 2 points.")
-  }
-
   test("Interpolated 'middle' color should be (128, 128, 128)") {
     val black = Color(0, 0, 0)
     val white = Color(255, 255, 255)
@@ -77,6 +75,30 @@ class VisualizationTest extends FunSuite with Checkers {
     val v = 0.5
     val interpolated = interpolateColor(vec, v)
     assert(interpolated === Color(128, 128, 128))
+  }
+
+  test("getBounds should return 2 x lower bound if value is less than the smallest point") {
+    val v = 1d
+    val bounds: ((Double, Color), (Double, Color)) = getBounds(points, v)
+    assert(bounds._1 === bounds._2, "Result tuple should have 2 identical elements")
+    assert((2d, Color(2, 2, 2)) === bounds._1)
+  }
+
+  test("getBounds should return 2 x higher bound if value is greater than the largest point") {
+    val v = 5d
+    val bounds: ((Double, Color), (Double, Color)) = getBounds(points, v)
+    assert(bounds._1 === bounds._2, "Result tuple should have 2 identical elements")
+    assert((4, Color(4, 4, 4)) === bounds._1)
+  }
+
+  test("getBounds should not skip the last element (1 until points.length)") {
+    val v = 3.5d
+    val bounds: ((Double, Color), (Double, Color)) = getBounds(points, v)
+    assert(bounds._1 !== bounds._2, "Result tuple should have 2 identical elements")
+    assert((
+      (3d, Color(3, 3, 3)),
+      (4d, Color(4, 4, 4))
+    ) === bounds)
   }
 
 }
