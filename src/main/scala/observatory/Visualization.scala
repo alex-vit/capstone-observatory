@@ -89,7 +89,7 @@ object Visualization {
     }
   }
 
-  private[observatory] def rgbToPixel(color: Color): Pixel = {
+  private[observatory] def rgbToPixel(color: Color, alpha: Int = 255): Pixel = {
     val Color(r, g, b) = color
     Pixel(r, g, b, 255)
   }

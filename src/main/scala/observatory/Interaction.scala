@@ -2,6 +2,7 @@ package observatory
 
 import com.sksamuel.scrimage.{Image, Pixel}
 import math._
+import Visualization.{predictTemperature, interpolateColor, rgbToPixel}
 
 /**
   * 3rd milestone: interactive visualization
@@ -37,7 +38,23 @@ object Interaction {
     * @return A 256×256 image showing the contents of the tile defined by `x`, `y` and `zooms`
     */
   def tile(temperatures: Iterable[(Location, Double)], colors: Iterable[(Double, Color)], zoom: Int, x: Int, y: Int): Image = {
-    ???
+
+    val width, height = 256
+    val alpha = 127
+
+    val xOffset = width * x
+    val yOffset = height * y
+
+    val pixels = (for {
+      xx <- xOffset until xOffset + width
+      yy <- yOffset until yOffset + height
+      tileLoc = tileLocation(zoom + 8, xx, yy)
+      temp = predictTemperature(temperatures, tileLoc)
+      color = interpolateColor(colors, temp)
+      pixel = rgbToPixel(color = color, alpha = alpha)
+    } yield pixel).toArray
+
+    Image(width, height, pixels)
   }
 
   /**
@@ -48,10 +65,14 @@ object Interaction {
     *                      y coordinates of the tile and the data to build the image from
     */
   def generateTiles[Data](
-    yearlyData: Iterable[(Int, Data)],
-    generateImage: (Int, Int, Int, Int, Data) => Unit
-  ): Unit = {
-    ???
+                           yearlyData: Iterable[(Int, Data)],
+                           generateImage: (Int, Int, Int, Int, Data) => Unit
+                         ): Unit = yearlyData.par.foreach {
+    case (year: Int, data: Data) => for {
+      zoom <- 0 to 3
+      x <- 0 until pow(2, zoom).toInt
+      y <- 0 until pow(2, zoom).toInt
+    } generateImage(year, zoom, x, y, data)
   }
 
 }
