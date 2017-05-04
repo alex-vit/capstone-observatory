@@ -1,7 +1,9 @@
 package observatory
 
 import com.sksamuel.scrimage.{Image, Pixel}
+
 import math._
+import scala.collection.immutable
 
 /**
   * 2nd milestone: basic visualization
@@ -56,14 +58,13 @@ object Visualization {
   }
 
   private[observatory] def getBounds(points: Iterable[(Double, Color)], value: Double): ((Double, Color), (Double, Color)) = {
-    assert(points.size >= 2, "Need at least 2 points.")
-    val sorted = points.toArray.sortBy(_._1)
+    val arr = points.toArray.sortBy(_._1)
 
-    if (value <= sorted.head._1) (sorted.head, sorted.head)
-    else if (sorted.last._1 <= value) (sorted.last, sorted.last)
+    if (value <= arr.head._1) (arr.head, arr.head)
+    else if (value >= arr.last._1) (arr.last, arr.last)
     else {
-      val i = (1 until sorted.length).find(i => value <= sorted(i)._1).get
-      (sorted(i - 1), sorted(i))
+      val i = (1 until arr.length).find(i => value < arr(i)._1).get
+      (arr(i - 1), arr(i))
     }
   }
 
@@ -91,7 +92,7 @@ object Visualization {
 
   private[observatory] def rgbToPixel(color: Color, alpha: Int = 255): Pixel = {
     val Color(r, g, b) = color
-    Pixel(r, g, b, 255)
+    Pixel(r, g, b, alpha)
   }
   private[observatory] def idxToLoc(idx: Int, cols: Int): Location = {
     val x = idx % cols

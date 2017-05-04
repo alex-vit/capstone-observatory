@@ -23,8 +23,8 @@ object Interaction {
 //      lat_deg = math.degrees(lat_rad)
 //      return (lat_deg, lon_deg)
     val n = pow(2.0d, zoom)
-    val lonDeg = x / n * 360d - 180d
-    val latRad = atan(sinh(Pi * (1 - 2 * y / n)))
+    val lonDeg = x.toDouble / n * 360 - 180
+    val latRad = atan(sinh(Pi * (1 - 2 * y.toDouble / n)))
     val latDeg = toDegrees(latRad)
     Location(latDeg, lonDeg)
   }
@@ -48,7 +48,7 @@ object Interaction {
     val pixels = (for {
       xx <- xOffset until xOffset + width
       yy <- yOffset until yOffset + height
-      tileLoc = tileLocation(zoom + 8, xx, yy)
+      tileLoc = tileLocation(zoom, xx, yy)
       temp = predictTemperature(temperatures, tileLoc)
       color = interpolateColor(colors, temp)
       pixel = rgbToPixel(color = color, alpha = alpha)
