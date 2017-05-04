@@ -1,6 +1,7 @@
 package observatory
 
 import com.sksamuel.scrimage.{Image, Pixel}
+import math._
 
 /**
   * 3rd milestone: interactive visualization
@@ -14,7 +15,17 @@ object Interaction {
     * @return The latitude and longitude of the top-left corner of the tile, as per http://wiki.openstreetmap.org/wiki/Slippy_map_tilenames
     */
   def tileLocation(zoom: Int, x: Int, y: Int): Location = {
-    ???
+//    def num2deg(xtile, ytile, zoom):
+//      n = 2.0 ** zoom
+//      lon_deg = xtile / n * 360.0 - 180.0
+//      lat_rad = math.atan(math.sinh(math.pi * (1 - 2 * ytile / n)))
+//      lat_deg = math.degrees(lat_rad)
+//      return (lat_deg, lon_deg)
+    val n = pow(2.0d, zoom)
+    val lonDeg = x / n * 360d - 180d
+    val latRad = atan(sinh(Pi * (1 - 2 * y / n)))
+    val latDeg = toDegrees(latRad)
+    Location(latDeg, lonDeg)
   }
 
   /**

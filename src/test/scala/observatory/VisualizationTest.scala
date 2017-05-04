@@ -17,12 +17,6 @@ class VisualizationTest extends FunSuite with Checkers {
     (4d, Color(4, 4, 4))
   )
 
-  test("Degrees to radians") {
-    val deg = 180
-    val rad = degreesToRadians(deg)
-    assert(rad == Pi)
-  }
-
   test("Distance between Riga and Vilnius is ~262 km") {
     val rigaLoc = Location(56.9496, 24.1052)
     val vilniusLoc = Location(54.6872, 25.2797)

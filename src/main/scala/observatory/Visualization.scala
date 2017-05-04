@@ -11,14 +11,12 @@ object Visualization {
   private val minDistance = 1000d // meters
   private val p = 2
 
-  private[observatory] def degreesToRadians(degrees: Double): Double = degrees * Pi / 180
-
   // based on the first formula from https://en.wikipedia.org/wiki/Great-circle_distance
   private[observatory] def distance(location1: Location, location2: Location): Double = {
-    val phi1 = degreesToRadians(location1.lat)
-    val lambda1 = degreesToRadians(location1.lon)
-    val phi2 = degreesToRadians(location2.lat)
-    val lambda2 = degreesToRadians(location2.lon)
+    val phi1 = toRadians(location1.lat)
+    val lambda1 = toRadians(location1.lon)
+    val phi2 = toRadians(location2.lat)
+    val lambda2 = toRadians(location2.lon)
 
 //    val deltaPhi = abs(phi1 - phi2)
     val deltaLambda = abs(lambda1 - lambda2)
