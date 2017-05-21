@@ -1,12 +1,13 @@
 package observatory
 
 import com.sksamuel.scrimage.{Image, Pixel}
+import observatory.Interaction.{tile, tileLocation}
+import observatory.Visualization.{interpolateColor, predictTemperature, rgbToPixel}
 
 /**
   * 5th milestone: value-added information visualization
   */
 object Visualization2 {
-
   /**
     * @param x X coordinate between 0 and 1
     * @param y Y coordinate between 0 and 1
@@ -25,7 +26,10 @@ object Visualization2 {
     d10: Double,
     d11: Double
   ): Double = {
-    ???
+    d00 * (1 - x) * (1 - y) +
+    d10 * x       * (1 - y) +
+    d01 * (1 - x) * y       +
+    d11 * x       * y
   }
 
   /**
@@ -43,7 +47,18 @@ object Visualization2 {
     x: Int,
     y: Int
   ): Image = {
-    ???
+
+    val width, height = 256
+
+    val pixels = (for {
+      xx <- 0 until width
+      yy <- 0 until height
+      temp = grid(xx, yy)
+      color = interpolateColor(colors, temp)
+      pixel = rgbToPixel(color = color)
+    } yield pixel).toArray
+
+    Image(width, height, pixels)
   }
 
 }
