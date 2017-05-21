@@ -48,17 +48,16 @@ object Visualization2 {
     y: Int
   ): Image = {
 
-    val width, height = 256
+    val temperatures: Stream[(Location, Double)] = (
+      for {
+        lat <- -89 to 90
+        lon <- -180 to 179
+        loc = Location(lat, lon)
+        temp = grid(lat, lon)
+      } yield (loc, temp)
+      ).toStream
 
-    val pixels = (for {
-      xx <- 0 until width
-      yy <- 0 until height
-      temp = grid(xx, yy)
-      color = interpolateColor(colors, temp)
-      pixel = rgbToPixel(color = color)
-    } yield pixel).toArray
-
-    Image(width, height, pixels)
+    tile(temperatures, colors, zoom, x, y)
   }
 
 }
