@@ -45,9 +45,10 @@ object Manipulation {
     * @return A sequence of grids containing the deviations compared to the normal temperatures
     */
   def deviation(temperatures: Iterable[(Location, Double)], normals: (Int, Int) => Double): (Int, Int) => Double = {
-    def dev(tempGrid: (Int, Int) => Double, normals: (Int, Int) => Double): (Int, Int) => Double = (lat: Int, lon: Int) => tempGrid((lat, lon)) - normals((lat, lon))
     val tempGrid = makeGrid(temperatures)
-    dev(tempGrid, normals)
+    (lat: Int, lon: Int) => {
+      tempGrid(lat, lon) - normals(lat, lon)
+    }
   }
 
 
