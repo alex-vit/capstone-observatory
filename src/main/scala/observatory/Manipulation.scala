@@ -24,7 +24,16 @@ object Manipulation {
       } yield (key, temp)
     ).toMap
 
-    def grid(temperatureMap: Map[(Int, Int), Double])(lat: Int, lon: Int) = temperatureMap((lat, lon))
+    def capTo(x: Int, min: Int, max: Int): Int =
+      if (x < min) min
+      else if (x > max) max
+      else x
+
+    def grid(temperatureMap: Map[(Int, Int), Double])(lat: Int, lon: Int) = {
+      val a = capTo(lat, -89, 90)
+      val b = capTo(lon, -180, 179)
+      temperatureMap((a, b))
+    }
 
     grid(temperatureMap)
   }
