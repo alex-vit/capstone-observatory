@@ -10,8 +10,8 @@ import scala.collection.immutable
   */
 object Visualization {
 
-  private val minDistance = 1000d // meters
-  private val p = 2
+  private[observatory] val minDistance = 1000d // meters
+  private[observatory] val p = 2
 
   // based on the first formula from https://en.wikipedia.org/wiki/Great-circle_distance
   private[observatory] def distance(location1: Location, location2: Location): Double = {
