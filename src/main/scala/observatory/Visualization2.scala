@@ -53,13 +53,29 @@ object Visualization2 {
     val pixels = (for {
       x <- 0 until width
       y <- 0 until height
-//      tileLoc = tileLocation(zoom, x, y)
-      temp = grid(x, y)
+      tileLoc = tileLocation(zoom, x, y)
+      temp = predictTemperature(grid, tileLoc)
       color = interpolateColor(colors, temp)
       pixel = rgbToPixel(color)
     } yield pixel).toArray
 
     Image(width, height, pixels)
+  }
+
+  private[observatory] def predictTemperature(grid: (Int, Int) => Double, tileLocation: Location): Double = {
+    val Location(lat, lon) = tileLocation // y, x
+    val baseLat = lat.toInt
+    val baseLon = lon.toInt
+
+    val y = lat - baseLat
+    val x = lon - baseLon
+
+    val d00 = grid(baseLat, baseLon)
+    val d01 = grid(baseLat, baseLon + 1)
+    val d10 = grid(baseLat + 1, baseLon)
+    val d11 = grid(baseLat + 1, baseLon + 1)
+
+    bilinearInterpolation(x, y, d00, d01, d10, d11)
   }
 
 }
