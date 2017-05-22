@@ -57,7 +57,7 @@ object Manipulation {
       } yield (lat, lon) -> avgTemp
     ).toMap
 
-    (lat: Int, lon: Int) => avgMap(lat, lon)
+    (lat: Int, lon: Int) => avgMap((lat, lon))
   }
 
   /**
