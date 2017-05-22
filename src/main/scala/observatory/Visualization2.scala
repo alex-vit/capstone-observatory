@@ -47,19 +47,19 @@ object Visualization2 {
     x: Int,
     y: Int
   ): Image = {
-
-    val width, height = 256
+    
+    import observatory.defaults.{tileWidth, tileHeight}
 
     val pixels = (for {
-      x <- 0 until width
-      y <- 0 until height
+      x <- 0 until tileWidth
+      y <- 0 until tileHeight
       tileLoc = tileLocation(zoom, x, y)
       temp = predictTemperature(grid, tileLoc)
       color = interpolateColor(colors, temp)
       pixel = rgbToPixel(color)
     } yield pixel).toArray
 
-    Image(width, height, pixels)
+    Image(tileWidth, tileHeight, pixels)
   }
 
   private[observatory] def predictTemperature(grid: (Int, Int) => Double, tileLocation: Location): Double = {

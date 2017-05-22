@@ -1,6 +1,6 @@
 package observatory
 
-import observatory.Visualization.{minDistance, p, distance, predictTemperature}
+import observatory.Visualization.predictTemperature
 
 /**
   * 4th milestone: value-added information
@@ -13,11 +13,13 @@ object Manipulation {
     *         returns the predicted temperature at this location
     */
   def makeGrid(temperatures: Iterable[(Location, Double)]): (Int, Int) => Double = {
+    
+    import observatory.defaults.{gridLatEnd, gridLatStart, gridLonEnd, gridLonStart}
 
     val temperatureMap = (
       for {
-        lat <- -89 to 90
-        lon <- -180 to 179
+        lat <- gridLatStart to gridLatEnd
+        lon <- gridLonStart to gridLonEnd
         key = (lat, lon)
         loc = Location(lat, lon)
         temp = predictTemperature(temperatures, loc)
@@ -30,8 +32,8 @@ object Manipulation {
       else x
 
     def grid(temperatureMap: Map[(Int, Int), Double])(lat: Int, lon: Int) = {
-      val a = capTo(lat, -89, 90)
-      val b = capTo(lon, -180, 179)
+      val a = capTo(lat, gridLatStart, gridLatEnd)
+      val b = capTo(lon, gridLonStart, gridLonEnd)
       temperatureMap((a, b))
     }
 

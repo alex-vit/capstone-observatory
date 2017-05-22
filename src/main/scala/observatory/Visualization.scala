@@ -1,18 +1,18 @@
 package observatory
 
 import com.sksamuel.scrimage.{Image, Pixel}
+import observatory.defaults.{
+  minDistanceMeters, p, earthRadiusMeters,
+  imageWidth, imageHeight
+}
 
-import math._
-import scala.collection.immutable
+import scala.math._
 
 /**
   * 2nd milestone: basic visualization
   */
 object Visualization {
-
-  private[observatory] val minDistance = 1000d // meters
-  private[observatory] val p = 2
-
+  
   // based on the first formula from https://en.wikipedia.org/wiki/Great-circle_distance
   private[observatory] def distance(location1: Location, location2: Location): Double = {
     val phi1 = toRadians(location1.lat)
@@ -25,9 +25,7 @@ object Visualization {
 
     val deltaSigma = acos(sin(phi1) * sin(phi2) + cos(phi1) * cos(phi2) * cos(deltaLambda))
 
-    val earthRadius = 6371 * 1000 // meters
-
-    val distance = earthRadius * deltaSigma
+    val distance = earthRadiusMeters * deltaSigma
     distance // also meters
   }
 
@@ -36,14 +34,13 @@ object Visualization {
     var weight, weightSum, weighedTemperatures = 0d
 
     known.foreach{
-      case (loc, temperature) => {
+      case (loc, temperature) =>
         val dist = distance(loc, forLocation)
         weight =
-          if (dist <= minDistance) 1
+          if (dist <= minDistanceMeters) 1
           else 1d / pow(dist, p)
         weightSum += weight
         weighedTemperatures += weight * temperature
-      }
     }
     weighedTemperatures / weightSum
   }
@@ -110,18 +107,15 @@ object Visualization {
     * @return A 360×180 image where each pixel shows the predicted temperature at its location
     */
   def visualize(temperatures: Iterable[(Location, Double)], colors: Iterable[(Double, Color)]): Image = {
-    val width = 360
-    val height = 180
-
     val pixels = (for {
-      i <- 0 until width * height
-      loc = idxToLoc(i, width)
+      i <- 0 until imageWidth * imageHeight
+      loc = idxToLoc(i, imageWidth)
       temp = predictTemperature(temperatures, loc)
       color = interpolateColor(colors, temp)
       pixel = rgbToPixel(color)
     } yield pixel).toArray
 
-    Image(width, height, pixels)
+    Image(imageWidth, imageHeight, pixels)
   }
 
 }
