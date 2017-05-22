@@ -48,7 +48,7 @@ object Visualization2 {
     y: Int
   ): Image = {
     
-    import observatory.defaults.{tileWidth, tileHeight}
+    import observatory.defaults.{tileWidth, tileHeight, alpha}
 
     val pixels = (for {
       x <- 0 until tileWidth
@@ -56,7 +56,7 @@ object Visualization2 {
       tileLoc = tileLocation(zoom, x, y)
       temp = predictTemperature(grid, tileLoc)
       color = interpolateColor(colors, temp)
-      pixel = rgbToPixel(color)
+      pixel = rgbToPixel(color, alpha)  // maybe they want alpha = 127 here?
     } yield pixel).toArray
 
     Image(tileWidth, tileHeight, pixels)
