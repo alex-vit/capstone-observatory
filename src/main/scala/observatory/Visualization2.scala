@@ -56,7 +56,7 @@ object Visualization2 {
       tileLoc = tileLocation(zoom, x, y)
       temp = predictTemperature(grid, tileLoc)
       color = interpolateColor(colors, temp)
-      pixel = rgbToPixel(color, alpha)  // maybe they want alpha = 127 here?
+      pixel = rgbToPixel(color, alpha)
     } yield pixel).toArray
 
     Image(tileWidth, tileHeight, pixels)
