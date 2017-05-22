@@ -39,22 +39,21 @@ object Interaction {
     */
   def tile(temperatures: Iterable[(Location, Double)], colors: Iterable[(Double, Color)], zoom: Int, x: Int, y: Int): Image = {
 
-    val width, height = 256
-    val alpha = 127
+    import observatory.defaults.{tileWidth, tileHeight, alpha}
 
-    val xOffset = width * x
-    val yOffset = height * y
+    val xOffset = tileWidth * x
+    val yOffset = tileHeight * y
 
     val pixels = (for {
-      xx <- xOffset until xOffset + width
-      yy <- yOffset until yOffset + height
+      xx <- xOffset until xOffset + tileWidth
+      yy <- yOffset until yOffset + tileHeight
       tileLoc = tileLocation(zoom, xx, yy)
       temp = predictTemperature(temperatures, tileLoc)
       color = interpolateColor(colors, temp)
       pixel = rgbToPixel(color = color, alpha = alpha)
     } yield pixel).toArray
 
-    Image(width, height, pixels)
+    Image(tileWidth, tileHeight, pixels)
   }
 
   /**
