@@ -86,7 +86,7 @@ object Visualization {
     //      )
     //    }
 
-    val pointsSeq = points.toSeq
+    val pointsSeq = points.toSeq.sortBy(_._1)
     val bounds: ((Double, Color), (Double, Color)) = pointsSeq.indexWhere(_._1 >= value) match {
       case -1 => // not found, value is after the right bound
         (points.init.last, points.last) // return last 2 points

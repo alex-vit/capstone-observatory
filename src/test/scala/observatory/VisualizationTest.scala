@@ -16,6 +16,21 @@ class VisualizationTest extends FunSuite with Checkers {
     (3d, Color(3, 3, 3)),
     (4d, Color(4, 4, 4))
   )
+  
+  test("Interpolate color with Coursera's values") {
+    // def interpolateColor(points: Iterable[(Double, Color)], value: Double): Color
+    val ccolor = Color(231,0,24)
+    val points = Iterable(
+      (-1d, Color(0, 255, 0)),
+      (0d, Color(0, 0, 255)),
+      (1d, Color(255, 0, 0)),
+      (2d, Color(255, 255, 0))
+    )
+    val value = 0.90588235294d
+    
+    val interpolated = interpolateColor(points, value)
+    assert(interpolated == ccolor)
+  }
 
   test("Distance between Riga and Vilnius is ~262 km") {
     val rigaLoc = Location(56.9496, 24.1052)
