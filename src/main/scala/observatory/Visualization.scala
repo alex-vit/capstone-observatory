@@ -55,12 +55,12 @@ object Visualization {
   }
 
   private[observatory] def getBounds(points: Iterable[(Double, Color)], value: Double): ((Double, Color), (Double, Color)) = {
-    val arr = points.toArray.sortBy(_._1)
+    val arr = points.toArray//.sortBy(_._1)
 
-    if (value <= arr.head._1) (arr.head, arr.head)
-    else if (value >= arr.last._1) (arr.last, arr.last)
+    if (value >= arr.head._1) (arr.head, arr.head)
+    else if (value <= arr.last._1) (arr.last, arr.last)
     else {
-      val i = (1 until arr.length).find(i => value < arr(i)._1).get
+      val i = (1 until arr.length).find(i => value > arr(i)._1).get
       (arr(i - 1), arr(i))
     }
   }
@@ -75,7 +75,7 @@ object Visualization {
     * @return The color that corresponds to `value`, according to the color scale defined by `points`
     */
   def interpolateColor(points: Iterable[(Double, Color)], value: Double): Color = {
-    val (low, high) = getBounds(points, value)
+    val (high, low) = getBounds(points, value)
     if (low == high) low._2
     else {
       val t = abs((value - low._1) / (high._1 - low._1))
